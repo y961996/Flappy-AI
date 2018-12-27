@@ -69,11 +69,13 @@ public class GameScene extends Scene{
 		Block block;
 		int height = random.nextInt(300) + 200;
 		float x = entityController.getLastBlockX();
+		
 		// Ceiling blocks
-		block = new Block(x + 250, 0, 75, height);
+		block = new Block(x, 0, 75, height);
 		entityController.addEntity(block);
+		
 		// Floor block
-		block = new Block(x + 250, height + 75, 75, Flappy.HEIGHT - height - 75);
+		block = new Block(x, height + 75, 75, Flappy.HEIGHT - height - 75);
 		entityController.addEntity(block);
 		
 		blockCount++;

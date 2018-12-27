@@ -61,8 +61,12 @@ public class EntityController {
 	public float getLastBlockX() {
 		for(int i = entities.size() - 1; i >= 0; i--) {
 			Entity e = entities.get(i);
-			if(e instanceof Block && e.x > Flappy.WIDTH) return e.getX();
-			else if(e instanceof Block && e.x + e.width > Flappy.WIDTH - 250) return e.x + e.width + 250;
+			if(e instanceof Block && e.x > Flappy.WIDTH) {
+				return e.getX();
+			}
+			else if(e instanceof Block && e.x + e.width > Flappy.WIDTH - 250) {
+				return e.x + 250;
+			} 
 		}
 		return Flappy.WIDTH;
 	}
