@@ -8,11 +8,13 @@ import java.util.Random;
 import flappy.game.Flappy;
 import flappy.game.entity.Block;
 import flappy.game.entity.EntityController;
+import flappy.game.entity.Player;
 import flappy.game.events.Event;
 import flappy.game.events.EventDispatcher;
 import flappy.game.events.eventTypes.MouseMovedEvent;
 import flappy.game.events.eventTypes.MousePressedEvent;
 import flappy.game.events.eventTypes.MouseReleasedEvent;
+import flappy.game.input.KeyboardInput;
 
 public class GameScene extends Scene{
 
@@ -22,11 +24,13 @@ public class GameScene extends Scene{
 	public EntityController entityController;
 	private Random random;
 	public static int blockCount;
+	public Player player;
 	
-	public GameScene(Flappy flappy, SceneController sceneController) {
+	public GameScene(Flappy flappy, SceneController sceneController, KeyboardInput keyboard) {
 		super(flappy, sceneController);
 		entityController = new EntityController();
 		random = new Random();
+		player = new Player(keyboard, 100, 100, 32, 32);
 		
 		addBlocks();
 	}
@@ -41,10 +45,20 @@ public class GameScene extends Scene{
 
 	@Override
 	public void update() {
+		player.update();
 		entityController.update();
 		if(createBlock) {
 			createBlock();
 		}
+	}
+	
+	@Override
+	public void render(Graphics g) {
+		g.setColor(Color.CYAN);
+		g.fillRect(0, 0, Flappy.WIDTH, Flappy.HEIGHT);
+		
+		entityController.render(g);
+		player.render(g);
 	}
 
 	public void addBlocks() {
@@ -80,14 +94,6 @@ public class GameScene extends Scene{
 		
 		blockCount++;
 		createBlock = false;
-	}
-	
-	@Override
-	public void render(Graphics g) {
-		g.setColor(Color.CYAN);
-		g.fillRect(0, 0, Flappy.WIDTH, Flappy.HEIGHT);
-		
-		entityController.render(g);
 	}
 	
 	public boolean onMousePressed(MousePressedEvent e) {

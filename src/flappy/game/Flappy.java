@@ -85,7 +85,6 @@ public class Flappy extends Canvas implements Runnable, EventListener{
 		double ns = 1000000000 / amountOfUpdates;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
-		@SuppressWarnings("unused")
 		int frames = 0;
 		while(running) {
 			long now = System.nanoTime();
@@ -134,17 +133,17 @@ public class Flappy extends Canvas implements Runnable, EventListener{
 		
 		sceneController = new SceneController();
 		
+		keyboardInput = new KeyboardInput();
+		mouseInput = new MouseInput(this);
+		
 		menuScene = new MenuScene(this, sceneController);
 		menuSceneIndex = sceneController.getNumberOfScenes();
 		sceneController.addScene(menuScene);
-		gameScene = new GameScene(this, sceneController);
+		gameScene = new GameScene(this, sceneController, keyboardInput);
 		gameSceneIndex = sceneController.getNumberOfScenes();
 		sceneController.addScene(gameScene);
 		
 		sceneController.setScene(gameSceneIndex);
-		
-		keyboardInput = new KeyboardInput();
-		mouseInput = new MouseInput(this);
 		
 		addKeyListener(keyboardInput);
 		addMouseListener(mouseInput);

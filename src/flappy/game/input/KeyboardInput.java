@@ -17,12 +17,14 @@ public class KeyboardInput implements KeyListener{
 	public boolean down;
 	public boolean left;
 	public boolean right;
+	public boolean space;
 	
 	public void update() {
 		up = keys[KeyEvent.VK_UP];
-		down = keys[KeyEvent.VK_UP];
-		left = keys[KeyEvent.VK_UP];
-		right = keys[KeyEvent.VK_UP];
+		down = keys[KeyEvent.VK_DOWN];
+		left = keys[KeyEvent.VK_LEFT];
+		right = keys[KeyEvent.VK_RIGHT];
+		space = keys[KeyEvent.VK_SPACE];
 	}
 	
 	@Override
