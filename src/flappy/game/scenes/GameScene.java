@@ -3,6 +3,7 @@ package flappy.game.scenes;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
+import java.util.Random;
 
 import flappy.game.Flappy;
 import flappy.game.entity.Block;
@@ -15,15 +16,19 @@ import flappy.game.events.eventTypes.MouseReleasedEvent;
 
 public class GameScene extends Scene{
 
+	public static final int MAX_BLOCK = 6;
+	public static boolean createBlock = false;
+	
 	public EntityController entityController;
+	private Random random;
+	public static int blockCount;
 	
 	public GameScene(Flappy flappy, SceneController sceneController) {
 		super(flappy, sceneController);
 		entityController = new EntityController();
+		random = new Random();
 		
-		// temp
-		Block b = new Block(100, 100, 50, 200);
-		entityController.addEntity(b);
+		addBlocks();
 	}
 
 	@Override
@@ -37,8 +42,44 @@ public class GameScene extends Scene{
 	@Override
 	public void update() {
 		entityController.update();
+		if(createBlock) {
+			createBlock();
+		}
 	}
 
+	public void addBlocks() {
+		Block block;
+		int height;
+		
+		for(int i = 0; i < MAX_BLOCK; i++) {
+			height = random.nextInt(300) + 200;
+			
+			// Ceiling blocks
+			block = new Block(400 + i * 250, 0, 75, height);
+			entityController.addEntity(block);
+			// Floor block
+			block = new Block(400 + i * 250, height + 75, 75, Flappy.HEIGHT - height - 75);
+			entityController.addEntity(block);
+			
+			blockCount++;
+		}
+	}
+	
+	public void createBlock() {
+		Block block;
+		int height = random.nextInt(300) + 200;
+		float x = entityController.getLastBlockX();
+		// Ceiling blocks
+		block = new Block(x + 250, 0, 75, height);
+		entityController.addEntity(block);
+		// Floor block
+		block = new Block(x + 250, height + 75, 75, Flappy.HEIGHT - height - 75);
+		entityController.addEntity(block);
+		
+		blockCount++;
+		createBlock = false;
+	}
+	
 	@Override
 	public void render(Graphics g) {
 		g.setColor(Color.CYAN);
