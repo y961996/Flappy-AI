@@ -9,9 +9,13 @@ import flappy.game.scenes.GameScene;
 public class EntityController {
 
 	private ArrayList<Entity> entities;
+	private GameScene gameScene;
+	private Player player;
 	
-	public EntityController() {
+	public EntityController(Player player, GameScene gameScene) {
 		entities = new ArrayList<Entity>();
+		this.gameScene = gameScene;
+		this.player = player;
 	}
 	
 	public void addEntity(Entity entity) {
@@ -36,6 +40,11 @@ public class EntityController {
 		removeEntity();
 		for(int i = 0; i < entities.size(); i++) {
 			Entity tempEntity = entities.get(i);
+			if(tempEntity.x < Flappy.WIDTH / 2) {
+				if(tempEntity.collisionBox.intersects(player.collisionBox)) {
+					gameScene.setGameOver(true);
+				}
+			}
 			if(tempEntity != null) {
 				if(tempEntity instanceof Block) {
 					if(tempEntity.getX() + tempEntity.getWidth() < 0) {

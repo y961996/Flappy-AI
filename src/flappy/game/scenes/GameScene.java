@@ -2,7 +2,6 @@ package flappy.game.scenes;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
 import java.util.Random;
 
 import flappy.game.Flappy;
@@ -19,18 +18,23 @@ import flappy.game.input.KeyboardInput;
 public class GameScene extends Scene{
 
 	public static final int MAX_BLOCK = 6;
+	public static final int BLOCK_SPACING = 125;
 	public static boolean createBlock = false;
-	
-	public EntityController entityController;
-	private Random random;
 	public static int blockCount;
-	public Player player;
+	
+	private EntityController entityController;
+	private Random random;
+	private Player player;
+	private int score;
+	private boolean gameOver;
 	
 	public GameScene(Flappy flappy, SceneController sceneController, KeyboardInput keyboard) {
 		super(flappy, sceneController);
-		entityController = new EntityController();
 		random = new Random();
 		player = new Player(keyboard, 100, 100, 32, 32);
+		entityController = new EntityController(player, this);
+		score = 0;
+		gameOver = false;
 		
 		addBlocks();
 	}
@@ -45,10 +49,12 @@ public class GameScene extends Scene{
 
 	@Override
 	public void update() {
-		player.update();
-		entityController.update();
-		if(createBlock) {
-			createBlock();
+		if(!gameOver) {
+			player.update();
+			entityController.update();
+			if(createBlock) {
+				createBlock();
+			}
 		}
 	}
 	
@@ -66,13 +72,13 @@ public class GameScene extends Scene{
 		int height;
 		
 		for(int i = 0; i < MAX_BLOCK; i++) {
-			height = random.nextInt(300) + 200;
+			height = random.nextInt(400) + 100;
 			
 			// Ceiling blocks
 			block = new Block(400 + i * 250, 0, 75, height);
 			entityController.addEntity(block);
 			// Floor block
-			block = new Block(400 + i * 250, height + 75, 75, Flappy.HEIGHT - height - 75);
+			block = new Block(400 + i * 250, height + BLOCK_SPACING, 75, Flappy.HEIGHT - height - BLOCK_SPACING);
 			entityController.addEntity(block);
 			
 			blockCount++;
@@ -81,7 +87,7 @@ public class GameScene extends Scene{
 	
 	public void createBlock() {
 		Block block;
-		int height = random.nextInt(300) + 200;
+		int height = random.nextInt(400) + 100;
 		float x = entityController.getLastBlockX();
 		
 		// Ceiling blocks
@@ -89,7 +95,7 @@ public class GameScene extends Scene{
 		entityController.addEntity(block);
 		
 		// Floor block
-		block = new Block(x, height + 75, 75, Flappy.HEIGHT - height - 75);
+		block = new Block(x, height + BLOCK_SPACING, 75, Flappy.HEIGHT - height - BLOCK_SPACING);
 		entityController.addEntity(block);
 		
 		blockCount++;
@@ -101,14 +107,19 @@ public class GameScene extends Scene{
 	}
 	
 	public boolean onMouseReleased(MouseReleasedEvent e) {
-		if(e.getButton() == MouseEvent.BUTTON1) {
-			return true;
-		}
 		return false;
 	}
 	
 	public boolean onMouseMoved(MouseMovedEvent e) {
 		return false;
+	}
+	
+	public void incrementScore() {
+		score++;
+	}
+	
+	public void setGameOver(boolean gameOver) {
+		this.gameOver = gameOver;
 	}
 
 }

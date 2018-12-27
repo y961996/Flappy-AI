@@ -7,8 +7,10 @@ import flappy.game.input.KeyboardInput;
 
 public class Player extends Entity{
 
-	private float gravity = 0.1f;
+	private float gravity = 1f;
 	private KeyboardInput keyboard;
+	private boolean canBounce = true;
+	private boolean isBouncing = false;
 	
 	public Player(KeyboardInput keyboard, float x, float y, int width, int height) {
 		super(x, y, width, height);
@@ -17,11 +19,22 @@ public class Player extends Entity{
 
 	@Override
 	public void update() {
+		collisionBox.x = (int)x;
+		collisionBox.y = (int)y;
+		
 		y += gravity;
 		if(keyboard.space) {
-			bounce();
+			if(canBounce) {
+				bounce();
+			}
 		}
-		if(gravity < 5.0f) {
+		if(!keyboard.space) {
+			if(isBouncing) {
+				isBouncing = false;
+				canBounce = true;
+			}
+		}
+		if(gravity < 9.8f) {
 			gravity += 0.1f;
 		}
 	}
@@ -33,7 +46,9 @@ public class Player extends Entity{
 	}
 
 	public void bounce() {
+		canBounce = false;
+		isBouncing = true;
 		this.gravity = 0.1f;
-		this.y -= 20;
+		this.y -= 65;
 	}
 }

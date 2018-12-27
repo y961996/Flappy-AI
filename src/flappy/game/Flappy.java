@@ -22,7 +22,7 @@ public class Flappy extends Canvas implements Runnable, EventListener{
 	private static final long serialVersionUID = 1L;
 
 	public static Rectangle mouseRectangle =  new Rectangle(MouseInput.getX(), MouseInput.getY(), 1, 1);
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	public static final int WIDTH = 1280;
 	public static final int HEIGHT = 640;
 	public static final String TITLE = "Flappy AI";

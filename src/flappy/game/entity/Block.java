@@ -11,7 +11,9 @@ public class Block extends Entity{
 
 	@Override
 	public void update() {
-		x--;
+		collisionBox.x = (int)x;
+		collisionBox.y = (int)y;
+		x-=2.5f;
 	}
 
 	@Override
