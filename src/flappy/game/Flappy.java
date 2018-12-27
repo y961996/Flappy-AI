@@ -141,7 +141,7 @@ public class Flappy extends Canvas implements Runnable, EventListener{
 		gameSceneIndex = sceneController.getNumberOfScenes();
 		sceneController.addScene(gameScene);
 		
-		sceneController.setScene(menuSceneIndex);
+		sceneController.setScene(gameSceneIndex);
 		
 		keyboardInput = new KeyboardInput();
 		mouseInput = new MouseInput(this);

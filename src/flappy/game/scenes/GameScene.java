@@ -1,9 +1,12 @@
 package flappy.game.scenes;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 
 import flappy.game.Flappy;
+import flappy.game.entity.Block;
+import flappy.game.entity.EntityController;
 import flappy.game.events.Event;
 import flappy.game.events.EventDispatcher;
 import flappy.game.events.eventTypes.MouseMovedEvent;
@@ -12,8 +15,15 @@ import flappy.game.events.eventTypes.MouseReleasedEvent;
 
 public class GameScene extends Scene{
 
+	public EntityController entityController;
+	
 	public GameScene(Flappy flappy, SceneController sceneController) {
 		super(flappy, sceneController);
+		entityController = new EntityController();
+		
+		// temp
+		Block b = new Block(100, 100, 50, 200);
+		entityController.addEntity(b);
 	}
 
 	@Override
@@ -26,12 +36,15 @@ public class GameScene extends Scene{
 
 	@Override
 	public void update() {
-		
+		entityController.update();
 	}
 
 	@Override
 	public void render(Graphics g) {
+		g.setColor(Color.CYAN);
+		g.fillRect(0, 0, Flappy.WIDTH, Flappy.HEIGHT);
 		
+		entityController.render(g);
 	}
 	
 	public boolean onMousePressed(MousePressedEvent e) {
