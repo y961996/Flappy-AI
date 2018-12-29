@@ -19,6 +19,7 @@ import flappy.game.events.eventTypes.MouseMovedEvent;
 import flappy.game.events.eventTypes.MousePressedEvent;
 import flappy.game.events.eventTypes.MouseReleasedEvent;
 import flappy.game.input.KeyboardInput;
+import flappy.game.utils.StaticResourceLoader;
 
 public class GameScene extends Scene{
 
@@ -33,12 +34,13 @@ public class GameScene extends Scene{
 	private KeyboardInput keyboard;
 	private float score;
 	private boolean gameOver;
+	private int groundX;
 	
 	public GameScene(Flappy flappy, SceneController sceneController, KeyboardInput keyboard) {
 		super(flappy, sceneController);
 		random = new Random();
 		this.keyboard = keyboard;
-		player = new Player(keyboard, 100, 100, 32, 32);
+		player = new Player(this, keyboard, 100, 100, 32, 32);
 		entityController = new EntityController(player, this);
 		score = 0;
 		gameOver = false;
@@ -68,12 +70,13 @@ public class GameScene extends Scene{
 			writePointToFile(textToWrite);
 			restart(keyboard);
 		}
+		
+		groundX = (groundX - 1) % Flappy.WIDTH;
 	}
 	
 	@Override
 	public void render(Graphics g) {
-		g.setColor(Color.CYAN);
-		g.fillRect(0, 0, Flappy.WIDTH, Flappy.HEIGHT);
+		g.drawImage(StaticResourceLoader.gameSceneBackground, 0, 0, Flappy.WIDTH, Flappy.HEIGHT, null);
 		
 		entityController.render(g);
 		player.render(g);
@@ -81,6 +84,9 @@ public class GameScene extends Scene{
 		g.setFont(new Font("Verdana", Font.BOLD, 24));
 		g.setColor(Color.BLACK);
 		g.drawString((int)score+"", 1200, 50);
+		
+		g.drawImage(StaticResourceLoader.ground, groundX, Flappy.HEIGHT - StaticResourceLoader.ground.getHeight() / 2, Flappy.WIDTH, StaticResourceLoader.ground.getHeight(), null);
+		g.drawImage(StaticResourceLoader.ground, groundX + Flappy.WIDTH, Flappy.HEIGHT - StaticResourceLoader.ground.getHeight() / 2, Flappy.WIDTH, StaticResourceLoader.ground.getHeight(), null);
 	}
 
 	public void addBlocks() {
@@ -91,10 +97,10 @@ public class GameScene extends Scene{
 			height = random.nextInt(400) + 100;
 			
 			// Ceiling blocks
-			block = new Block(400 + i * 250, 0, 75, height);
+			block = new Block(400 + i * 250, 0, 75, height, true);
 			entityController.addEntity(block);
 			// Floor block
-			block = new Block(400 + i * 250, height + BLOCK_SPACING, 75, Flappy.HEIGHT - height - BLOCK_SPACING);
+			block = new Block(400 + i * 250, height + BLOCK_SPACING, 75, Flappy.HEIGHT - height - BLOCK_SPACING, false);
 			entityController.addEntity(block);
 			
 			blockCount++;
@@ -107,11 +113,11 @@ public class GameScene extends Scene{
 		float x = entityController.getLastBlockX();
 		
 		// Ceiling blocks
-		block = new Block(x, 0, 75, height);
+		block = new Block(x, 0, 75, height, true);
 		entityController.addEntity(block);
 		
 		// Floor block
-		block = new Block(x, height + BLOCK_SPACING, 75, Flappy.HEIGHT - height - BLOCK_SPACING);
+		block = new Block(x, height + BLOCK_SPACING, 75, Flappy.HEIGHT - height - BLOCK_SPACING, false);
 		entityController.addEntity(block);
 		
 		blockCount++;
@@ -119,7 +125,7 @@ public class GameScene extends Scene{
 	}
 	
 	private void restart(KeyboardInput keyboard) {
-		player = new Player(keyboard, 100, 100, 32, 32);
+		player = new Player(this, keyboard, 100, 100, 32, 32);
 		entityController = new EntityController(player, this);
 		score = 0;
 		gameOver = false;

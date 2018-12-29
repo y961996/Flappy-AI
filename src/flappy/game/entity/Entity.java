@@ -14,7 +14,6 @@ public abstract class Entity {
 	
 	public abstract void update();
 	public abstract void render(Graphics g);
-	// Maybe add checkCollision method as an abstraction to the entity class
 	
 	public Entity(float x, float y, int width, int height) {
 		this.x = x;
