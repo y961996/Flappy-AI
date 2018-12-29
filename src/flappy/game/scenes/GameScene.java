@@ -1,7 +1,12 @@
 package flappy.game.scenes;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 
 import flappy.game.Flappy;
@@ -25,12 +30,14 @@ public class GameScene extends Scene{
 	private EntityController entityController;
 	private Random random;
 	private Player player;
-	private int score;
+	private KeyboardInput keyboard;
+	private float score;
 	private boolean gameOver;
 	
 	public GameScene(Flappy flappy, SceneController sceneController, KeyboardInput keyboard) {
 		super(flappy, sceneController);
 		random = new Random();
+		this.keyboard = keyboard;
 		player = new Player(keyboard, 100, 100, 32, 32);
 		entityController = new EntityController(player, this);
 		score = 0;
@@ -55,6 +62,11 @@ public class GameScene extends Scene{
 			if(createBlock) {
 				createBlock();
 			}
+			score += 0.01;
+		}else {
+			String textToWrite = "[" + Flappy.getCurrentDateAndTime() + "] " + "Game finished with score: " + (int)score + "(" + score + ")";
+			writePointToFile(textToWrite);
+			restart(keyboard);
 		}
 	}
 	
@@ -65,6 +77,10 @@ public class GameScene extends Scene{
 		
 		entityController.render(g);
 		player.render(g);
+		
+		g.setFont(new Font("Verdana", Font.BOLD, 24));
+		g.setColor(Color.BLACK);
+		g.drawString((int)score+"", 1200, 50);
 	}
 
 	public void addBlocks() {
@@ -100,6 +116,39 @@ public class GameScene extends Scene{
 		
 		blockCount++;
 		createBlock = false;
+	}
+	
+	private void restart(KeyboardInput keyboard) {
+		player = new Player(keyboard, 100, 100, 32, 32);
+		entityController = new EntityController(player, this);
+		score = 0;
+		gameOver = false;
+		
+		addBlocks();
+	}
+	
+	private void writePointToFile(String text) {
+		File file = new File("res/points.txt");
+		
+		if(!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			FileWriter writer = new FileWriter(file.getAbsolutePath(), true);
+			BufferedWriter bw = new BufferedWriter(writer);
+			
+			bw.write(text + "\r\n");
+			
+			bw.close();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public boolean onMousePressed(MousePressedEvent e) {

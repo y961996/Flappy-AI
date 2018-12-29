@@ -2,10 +2,16 @@ package flappy.game;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.JFrame;
 
@@ -157,7 +163,7 @@ public class Flappy extends Canvas implements Runnable, EventListener{
 	private void initWindow() {
 		initCursor();
 		
-		//frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/hangmanIcon.png")));
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/flappyIcon.png")));
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -172,16 +178,22 @@ public class Flappy extends Canvas implements Runnable, EventListener{
 	}
 	
 	private void initCursor() {
-		/*Toolkit toolkit = Toolkit.getDefaultToolkit();
-		Image cursor = toolkit.getImage("");
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image cursor = toolkit.getImage("res/images/cursor.png");
 		Point cursorHotSpot = new Point(0, 0);
 		Cursor customCursor = toolkit.createCustomCursor(cursor, cursorHotSpot, "cursor");
-		*/
+		
 		frame = new JFrame(TITLE);
-		/*
+		
 		if(cursor != null) {
 			frame.setCursor(customCursor);
-		}*/
+		}
+	}
+	
+	public static String getCurrentDateAndTime() {
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+		return dateFormat.format(now);
 	}
 	
 	public int getMenuSceneIndex() {
