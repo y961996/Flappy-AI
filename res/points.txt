@@ -130,3 +130,5 @@
 [2018/12/29 20:19:12] Game finished with score: 0(0.7599996)
 [2018/12/29 20:19:27] Game finished with score: 9(9.100113)
 [2018/12/29 20:19:29] Game finished with score: 1(1.389999)
+[2018/12/29 20:52:48] Game finished with score: 0(0.7599996)
+[2018/12/29 20:52:49] Game finished with score: 0(0.7599996)

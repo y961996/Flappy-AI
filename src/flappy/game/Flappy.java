@@ -91,6 +91,7 @@ public class Flappy extends Canvas implements Runnable, EventListener{
 		double ns = 1000000000 / amountOfUpdates;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
+		@SuppressWarnings("unused")
 		int frames = 0;
 		while(running) {
 			long now = System.nanoTime();
