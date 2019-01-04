@@ -9,10 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 
+import flappy.ai.Individual;
 import flappy.game.Flappy;
+import flappy.game.FlappyAI;
 import flappy.game.entity.Block;
 import flappy.game.entity.EntityController;
-import flappy.game.entity.Player;
 import flappy.game.events.Event;
 import flappy.game.events.EventDispatcher;
 import flappy.game.events.eventTypes.MouseMovedEvent;
@@ -21,7 +22,7 @@ import flappy.game.events.eventTypes.MouseReleasedEvent;
 import flappy.game.input.KeyboardInput;
 import flappy.game.utils.StaticResourceLoader;
 
-public class GameScene extends Scene{
+public class AIGameScene extends AIScene{
 
 	public static final int MAX_BLOCK = 6;
 	public static final int BLOCK_SPACING = 125;
@@ -30,24 +31,16 @@ public class GameScene extends Scene{
 	
 	private EntityController entityController;
 	private Random random;
-	private Player player;
+	private Individual[] individuals;
 	private KeyboardInput keyboard;
-	private float score;
+	private float[] individualScore;
 	private boolean gameOver;
 	private int groundX;
 	
-	public GameScene(Flappy flappy, SceneController sceneController, KeyboardInput keyboard) {
-		super(flappy, sceneController);
-		random = new Random();
-		this.keyboard = keyboard;
-		player = new Player(this, keyboard, 100, 100, 32, 32);
-		entityController = new EntityController(player, this);
-		score = 0;
-		gameOver = false;
-		
-		addBlocks();
+	public AIGameScene(FlappyAI flappyAI, AISceneController sceneController) {
+		super(flappyAI, sceneController);
 	}
-
+	
 	@Override
 	public void onEvent(Event event) {
 		EventDispatcher dispatcher = new EventDispatcher(event);
@@ -59,15 +52,19 @@ public class GameScene extends Scene{
 	@Override
 	public void update() {
 		if(!gameOver) {
-			player.update();
+			for(int i = 0; i < individuals.length; i++) {
+				individuals[i].update();
+			}
 			entityController.update();
 			if(createBlock) {
 				createBlock();
 			}
-			score += 0.01;
+			for (int i = 0; i < individualScore.length; i++) {
+				String textToWrite = "[" + Flappy.getCurrentDateAndTime() + "] " + "Game finished with average score: " + (int)averageScore() + "(" + averageScore() + ")";
+				writePointToFile(textToWrite);
+				individualScore[i] += 0.01;
+			}
 		}else {
-			String textToWrite = "[" + Flappy.getCurrentDateAndTime() + "] " + "Game finished with score: " + (int)score + "(" + score + ")";
-			writePointToFile(textToWrite);
 			restart(keyboard);
 		}
 		
@@ -79,11 +76,13 @@ public class GameScene extends Scene{
 		g.drawImage(StaticResourceLoader.gameSceneBackground, 0, 0, Flappy.WIDTH, Flappy.HEIGHT, null);
 		
 		entityController.render(g);
-		player.render(g);
+		for(int i = 0; i < individuals.length; i++) {
+			individuals[i].render(g);
+		}
 		
 		g.setFont(new Font("Verdana", Font.BOLD, 24));
 		g.setColor(Color.BLACK);
-		g.drawString((int)score+"", 1200, 50);
+		g.drawString((int)averageScore() + "", 1200, 50);
 		
 		g.drawImage(StaticResourceLoader.ground, groundX, Flappy.HEIGHT - StaticResourceLoader.ground.getHeight() / 2, Flappy.WIDTH, StaticResourceLoader.ground.getHeight(), null);
 		g.drawImage(StaticResourceLoader.ground, groundX + Flappy.WIDTH, Flappy.HEIGHT - StaticResourceLoader.ground.getHeight() / 2, Flappy.WIDTH, StaticResourceLoader.ground.getHeight(), null);
@@ -125,9 +124,6 @@ public class GameScene extends Scene{
 	}
 	
 	private void restart(KeyboardInput keyboard) {
-		player = new Player(this, keyboard, 100, 100, 32, 32);
-		entityController = new EntityController(player, this);
-		score = 0;
 		gameOver = false;
 		
 		addBlocks();
@@ -167,6 +163,17 @@ public class GameScene extends Scene{
 	
 	public boolean onMouseMoved(MouseMovedEvent e) {
 		return false;
+	}
+	
+	public float averageScore() {
+		float totalIndividual = individuals.length;
+		float sum = 0;
+		
+		for (int i = 0; i < totalIndividual; i++) {
+			sum += individualScore[i];
+		}
+		
+		return sum / totalIndividual;
 	}
 	
 	public void setGameOver(boolean gameOver) {

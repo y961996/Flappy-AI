@@ -1,5 +1,9 @@
 package flappy.ai;
 
+import java.util.Random;
+
+import flappy.game.Flappy;
+
 public class Population {
 
 	public int populationSize;
@@ -10,8 +14,11 @@ public class Population {
 		this.populationSize = size;
 		individuals = new Individual[populationSize];
 		
+		Random random = new Random();
+		float y = 0;
 		for(int i = 0; i < individuals.length; i++) {
-			individuals[i] = new Individual();
+			y = (random.nextFloat() * Flappy.HEIGHT - 80) + 40;
+			individuals[i] = new Individual(100, y, 32, 32);
 		}
 	}
 	
