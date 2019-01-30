@@ -148,3 +148,7 @@
 [2019/01/04 11:01:01] Game finished with score: 0(0.7599996)
 [2019/01/04 11:02:14] Game finished with score: 2(2.1999984)
 [2019/01/04 11:02:16] Game finished with score: 0(0.86999947)
+[2019/01/23 23:21:52] Game finished with score: 0(0.7599996)
+[2019/01/23 23:21:54] Game finished with score: 1(1.2199992)
+[2019/01/23 23:22:01] Game finished with score: 4(4.360005)
+[2019/01/23 23:22:02] Game finished with score: 0(0.86999947)
